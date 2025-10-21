@@ -48,4 +48,6 @@ class User extends Authenticatable
 
     public function articles() {return $this->hasMany(Article::class);}
     public function comments() {return $this->hasMany(Comment::class);}
+    public function favorites() {return $this->hasMany(Favorite::class);}
+    public function followers() {return $this->hasMany(Follower::class);}
 }
