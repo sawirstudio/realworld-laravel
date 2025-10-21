@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
+    /**
+     * @unauthenticated
+     */
     public function index()
     {
         return TagResource::collection(

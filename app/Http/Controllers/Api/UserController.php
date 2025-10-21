@@ -11,11 +11,17 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    /**
+     * @unauthenticated
+     */
     public function store(CreateUserRequest $request)
     {
         return new UserResource();
     }
 
+    /**
+     * @unauthenticated
+     */
     public function show(User $user)
     {
         return new UserResource(

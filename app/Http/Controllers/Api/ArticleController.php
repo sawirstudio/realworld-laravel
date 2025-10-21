@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
+    /**
+     * @unauthenticated
+     */
     public function index(Request $request)
     {
         return ArticleResource::collection(
@@ -54,6 +57,9 @@ class ArticleController extends Controller
         return $record;
     }
 
+    /**
+     * @unauthenticated
+     */
     public function show(Article $article)
     {
         return new ArticleResource(

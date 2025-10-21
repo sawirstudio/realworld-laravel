@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+    /**
+     * @unauthenticated
+     */
     public function index(Request $request, Article $article)
     {
         return CommentResource::collection(

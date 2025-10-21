@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Carbon\CarbonImmutable;
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -40,5 +43,9 @@ class AppServiceProvider extends ServiceProvider
             Http::preventStrayRequests();
             Sleep::fake();
         }
+        Scramble::configure()
+            ->withDocumentTransformers(function (OpenApi $openApi) {
+                $openApi->secure(SecurityScheme::http('bearer'));
+            });
     }
 }
