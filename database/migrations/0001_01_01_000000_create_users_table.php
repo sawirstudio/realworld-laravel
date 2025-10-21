@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('bio')->nullable();
             $table->text('image')->nullable();
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
 
