@@ -48,8 +48,6 @@ class AppServiceProvider extends ServiceProvider
             ->withDocumentTransformers(function (OpenApi $openApi) {
                 $openApi->secure(SecurityScheme::http('bearer'));
             });
-        Gate::define('viewApiDocs', function ($user) {
-            return true;
-        });
+        Gate::define('viewApiDocs', fn ($user = null) => true);
     }
 }
