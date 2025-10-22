@@ -10,20 +10,18 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class ArticleResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return [
             'title' => $this->resource->title,
             'excerpt' => $this->resource->excerpt,
             'content' => $this->resource->content,
+            'created_at' => $this->resource->created_at,
+            'favorites_count' => $this->whenCounted('favorites'),
+            'favorited' => $this->whenExistsLoaded('favorited'),
             'user' => new UserResource($this->whenLoaded('user')),
             'comments' => CommentResource::collection($this->whenLoaded('comments')),
-            'created_at' => $this->resource->created_at,
+            'tags' => TagResource::collection($this->whenLoaded('tags')),
         ];
     }
 }
