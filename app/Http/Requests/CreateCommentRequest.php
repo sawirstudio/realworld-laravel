@@ -22,8 +22,13 @@ class CreateCommentRequest extends FormRequest
     protected function passedValidation()
     {
         $this->merge([
-            'user_id' => auth()->id(),
-            'article_id' => $this->route('article')->getKey(),
+            'user_id' => $this->user()->getKey(),
+            'article_id' => $this->article()->getKey(),
         ]);
+    }
+
+    public function article(): Article
+    {
+        return once(fn () => $this->route('article'));
     }
 }

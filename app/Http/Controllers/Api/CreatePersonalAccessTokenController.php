@@ -5,22 +5,21 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreatePersonalAccessTokenRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
-class PersonalAccessTokenController extends Controller
+class CreatePersonalAccessTokenController extends Controller
 {
     /**
      * @unauthenticated
      */
-    public function store(CreatePersonalAccessTokenRequest $request)
+    public function __invoke(CreatePersonalAccessTokenRequest $request)
     {
         $user = User::query()
-            ->where('name', $request->str('name'))
+            ->where('name', $request->safe()->input('name'))
             ->firstOrFail();
 
-        if (false === Hash::check($request->str('password'), $user->password)) {
+        if (false === Hash::check($request->safe()->input('password'), $user->password)) {
             throw ValidationException::withMessages([
                 'name' => ['The provided credentials are incorrect.'],
             ]);
@@ -29,12 +28,5 @@ class PersonalAccessTokenController extends Controller
         return [
             'token' => $user->createtoken('web')->plainTextToken,
         ];
-    }
-
-    public function destroy(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->noContent();
     }
 }

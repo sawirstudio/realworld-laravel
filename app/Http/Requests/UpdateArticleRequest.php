@@ -2,17 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Article;
 use App\Models\Tag;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdateArticleRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return $this->route('article')->user_id == $this->user()->getKey();
-    }
-
     public function rules(): array
     {
         return [
@@ -27,5 +23,10 @@ class UpdateArticleRequest extends FormRequest
     public function passedValidation()
     {
         $this->except('tags');
+    }
+
+    public function record(): Article
+    {
+        return once(fn () => $this->route('article'));
     }
 }

@@ -2,13 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Comment;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCommentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->route('comment')->user_id == $this->user()->getKey();
+        return $this->record()->user->is($this->user());
     }
 
     public function rules(): array
@@ -16,5 +17,10 @@ class UpdateCommentRequest extends FormRequest
         return [
             'content' => ['required', 'string', 'max:1000'],
         ];
+    }
+
+    public function record(): Comment
+    {
+        return once(fn() => $this->route('comment'));
     }
 }

@@ -9,11 +9,11 @@ use Illuminate\Http\Request;
 
 class FollowUserController extends Controller
 {
-    public function __invoke(User $user)
+    public function __invoke(User $user, Request $request)
     {
         Follower::create([
             'user_id' => $user->getKey(),
-            'follower_id' => auth()->id(),
+            'follower_id' => $request->user()->getKey(),
         ]);
 
         return response()->noContent();
