@@ -16,7 +16,7 @@ class UserResource extends JsonResource
             'name' => $this->resource->name,
             'bio' => $this->resource->bio,
             'image' => $this->resource->image,
-            'following' => $this->whenExistsLoaded('following'),
+            'following' => $this->whenHas('following'),
         ];
     }
 }
