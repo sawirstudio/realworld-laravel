@@ -20,7 +20,7 @@ class CreateArticleRequest extends FormRequest
             'excerpt' => ['string', 'max:1000'],
             'content' => ['string'],
             'tags' => ['array'],
-            'tags.*' => ['string', Rule::exists(Tag::class, 'slug')],
+            'tags.*' => ['string'],
         ];
     }
 

@@ -3,20 +3,25 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateArticleRequest;
 use App\Models\Article;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 
 class CreateArticleController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(CreateArticleRequest $request)
     {
         $record = Article::create($request->validated());
 
-        if ($tags = $request->json('tags')) {
-            $tags = Tag::query()
-                ->whereIn('slug', $tags)
-                ->pluck('id');
+        if ($tagsData = $request->json('tags')) {
+            $tags = [];
+            foreach ($tagsData as $tag) {
+                $tags[] = Tag::query()
+                    ->where('name', $tag)
+                    ->orWhere('slug', $tag)
+                    ->firstOr(fn () => Tag::create(['name' => $tag]));
+            }
             $record->tags()->attach($tags);
         }
 

@@ -16,7 +16,7 @@ class UpdateArticleRequest extends FormRequest
             'excerpt' => ['required', 'string', 'max:1000'],
             'content' => ['required', 'string'],
             'tags' => ['array'],
-            'tags.*' => ['string', Rule::exists(Tag::class, 'slug')],
+            'tags.*' => ['string'],
         ];
     }
 
