@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\FavoriteArticleController;
 use App\Http\Controllers\Api\FollowUserController;
 use App\Http\Controllers\Api\PersonalAccessTokenController;
 use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\Api\UnfavoriteArticleController;
 use App\Http\Controllers\Api\UnfollowUserController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
@@ -28,6 +30,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/users/{user:name}/followers', FollowUserController::class);
     Route::post('/users/{user:name}/unfollow', UnfollowUserController::class);
+
+    Route::post('/articles/{article:slug}/favorites', FavoriteArticleController::class);
+    Route::post('/articles/{article:slug}/unfavorite', UnfavoriteArticleController::class);
 });
 Route::get('articles', [ArticleController::class, 'index']);
 Route::get('articles/{article:slug}', [ArticleController::class, 'show']);
