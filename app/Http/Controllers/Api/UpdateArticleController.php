@@ -17,7 +17,6 @@ class UpdateArticleController extends Controller
             foreach ($tagsData as $tag) {
                 $tags[] = Tag::query()
                     ->where('name', $tag)
-                    ->orWhere('slug', $tag)
                     ->firstOr(fn () => Tag::create(['name' => $tag]));
             }
             $request->record()->tags()->sync($tags);

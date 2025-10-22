@@ -15,7 +15,7 @@ class Article extends Model
     use SoftDeletes;
     use HasSlug;
 
-    public function tags(){return $this->belongsToMany(Tag::class, 'article_tags');}
+    public function tags(){return $this->belongsToMany(Tag::class, 'article_tags')->withTimestamps();}
     public function comments(){return $this->hasMany(Comment::class);}
     public function user(){return $this->belongsTo(User::class);}
     public function favorites(){return $this->hasMany(Favorite::class);}

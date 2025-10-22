@@ -15,7 +15,7 @@ class ListArticlesController extends Controller
     {
         return Article::query()
             ->when($request->query('tag'), function ($query, $tag) {
-                $query->whereRelation('tags', 'slug', $tag);
+                $query->whereRelation('tags', 'name', $tag);
             })
             ->when($request->query('user'), function ($query, $author) {
                 $query->whereRelation('user', 'name', $author);

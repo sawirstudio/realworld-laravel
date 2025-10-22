@@ -14,7 +14,6 @@ class TagResource extends JsonResource
     {
         return [
             'name' => $this->resource->name,
-            'slug' => $this->resource->slug,
         ];
     }
 }
