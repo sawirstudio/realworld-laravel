@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USER_ID: 82
+        GROUP_ID: 82
+    image: sawirstudio/realworld-laravel:latest
+    platform: linux/amd64
