@@ -9,6 +9,7 @@ use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
@@ -47,5 +48,8 @@ class AppServiceProvider extends ServiceProvider
             ->withDocumentTransformers(function (OpenApi $openApi) {
                 $openApi->secure(SecurityScheme::http('bearer'));
             });
+        Gate::define('viewApiDocs', function ($user) {
+            return true;
+        });
     }
 }
