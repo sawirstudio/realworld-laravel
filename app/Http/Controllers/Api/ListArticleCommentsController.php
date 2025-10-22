@@ -19,7 +19,7 @@ class ListArticleCommentsController extends Controller
             ->whereBelongsTo($article)
             ->with('user', function ($query) use ($request) {
                 $query->withExists(['followers as following' => function (Builder $query) use ($request) {
-                    $query->where('follower_id', $request->user('sanctum')->getKey());
+                    $query->where('follower_id', $request->user('sanctum')?->getKey());
                 }]);
             })
             ->orderByDesc('created_at')

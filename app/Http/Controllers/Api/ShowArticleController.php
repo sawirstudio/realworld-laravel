@@ -16,12 +16,12 @@ class ShowArticleController extends Controller
     {
         return $article
             ->loadExists(['favorites as favorited' => function ($query) use ($request) {
-                $query->whereBelongsTo($request->user('sanctum'));
+                $query->where('user_id', $request->user('sanctum')?->getKey());
             }])
-            ->load(['user' => function (Builder $query) use ($request) {
+            ->load(['user' => function ($query) use ($request) {
                 $query->withCount('followers')
                     ->withExists(['followers as following' => function (Builder $query) use ($request) {
-                        $query->where('follower_id', $request->user()->getKey());
+                        $query->where('follower_id', $request->user('sanctum')?->getKey());
                     }]);
             }])
             ->toResource();

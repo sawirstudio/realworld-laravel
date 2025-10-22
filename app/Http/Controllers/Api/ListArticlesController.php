@@ -17,18 +17,18 @@ class ListArticlesController extends Controller
             ->when($request->query('tag'), function ($query, $tag) {
                 $query->whereRelation('tags', 'slug', $tag);
             })
-            ->when($request->query('author'), function ($query, $author) {
+            ->when($request->query('user'), function ($query, $author) {
                 $query->whereRelation('user', 'name', $author);
             })
-            ->when($request->filled('favorited'), function ($query) {
-                $query->whereRelation('favorites', 'user_id', auth('sanctum')->id());
+            ->when($request->filled('favorited'), function ($query) use ($request) {
+                $query->whereRelation('favorites', 'user_id', operator: $request->user('sanctum')?->getKey());
             })
-            ->when($request->filled('favorited'), function ($query) {
-                $query->whereRelation('favorites', 'user_id', auth('sanctum')->id());
+            ->when($request->filled('favorited'), function ($query) use ($request) {
+                $query->whereRelation('favorites', 'user_id', $request->user('sanctum')?->getKey());
             })
-            ->when($request->filled('feed'), function ($query) {
+            ->when($request->filled('feed'), function ($query) use ($request) {
                 $query->whereIn('user_id', User::query()
-                    ->whereRelation('followers', 'follower_id', auth('sanctum')->id())
+                    ->whereRelation('followers', 'follower_id', $request->user('sanctum')?->getKey())
                     ->select('id'));
             })
             ->with('user.followers')

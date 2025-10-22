@@ -12,11 +12,11 @@ class ShowUserController extends Controller
     /**
      * @unauthenticated
      */
-    public function __invoke(User $user)
+    public function __invoke(User $user, Request $request)
     {
         return new UserResource(
-            $user->loadExists(['followers as following' => function ($query) {
-                    $query->where('follower_id', auth('sanctum')->id());
+            $user->loadExists(['followers as following' => function ($query) use ($request) {
+                    $query->where('follower_id', $request->user('sanctum')?->getKey());
                 }]),
         );
     }
