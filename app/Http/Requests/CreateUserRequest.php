@@ -23,15 +23,4 @@ class CreateUserRequest extends FormRequest
             'image' => ['nullable', 'url', 'max:2048'],
         ];
     }
-
-    protected function passedValidation()
-    {
-        $this->only([
-            'name',
-            'email',
-            'password',
-            'bio',
-            'image',
-        ]);
-    }
 }

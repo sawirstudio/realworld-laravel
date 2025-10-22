@@ -12,7 +12,10 @@ class CreateArticleController extends Controller
 {
     public function __invoke(CreateArticleRequest $request)
     {
-        $record = Article::create($request->validated());
+        $record = Article::create([
+            ...$request->safe()->except(['tags']),
+            'user_id' => $request->user()->getKey(),
+        ]);
 
         if ($tagsData = $request->json('tags')) {
             $tags = [];

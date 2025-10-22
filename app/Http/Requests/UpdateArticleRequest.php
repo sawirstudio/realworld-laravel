@@ -20,11 +20,6 @@ class UpdateArticleRequest extends FormRequest
         ];
     }
 
-    public function passedValidation()
-    {
-        $this->except('tags');
-    }
-
     public function record(): Article
     {
         return once(fn () => $this->route('article'));

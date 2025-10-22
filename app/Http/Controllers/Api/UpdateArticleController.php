@@ -10,7 +10,7 @@ class UpdateArticleController extends Controller
 {
     public function __invoke(UpdateArticleRequest $request)
     {
-        $request->record()->update($request->validated());
+        $request->record()->update($request->safe()->except(['tags']));
 
         if ($tagsData = $request->json('tags')) {
             $tags = [];

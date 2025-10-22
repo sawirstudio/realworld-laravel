@@ -8,11 +8,6 @@ use Illuminate\Validation\Rule;
 
 class CreateArticleRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     public function rules(): array
     {
         return [
@@ -22,13 +17,5 @@ class CreateArticleRequest extends FormRequest
             'tags' => ['array'],
             'tags.*' => ['string'],
         ];
-    }
-
-    protected function passedValidation(): void
-    {
-        $this->merge([
-            'user_id' => $this->user()->getKey(),
-        ])
-        ->except('tags');
     }
 }
