@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\FollowUserController;
 use App\Http\Controllers\Api\PersonalAccessTokenController;
 use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\Api\UnfollowUserController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +25,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('articles/{article:slug}/comments', [CommentController::class, 'store']);
     Route::put('comments/{comment}', [CommentController::class, 'update']);
     Route::delete('comments/{comment}', [CommentController::class, 'destroy']);
+
+    Route::post('/users/{user:name}/followers', FollowUserController::class);
+    Route::post('/users/{user:name}/unfollow', UnfollowUserController::class);
 });
 Route::get('articles', [ArticleController::class, 'index']);
 Route::get('articles/{article:slug}', [ArticleController::class, 'show']);
