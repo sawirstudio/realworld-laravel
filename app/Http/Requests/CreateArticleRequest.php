@@ -2,29 +2,33 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Tag;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreateArticleRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
             'title' => ['required', 'string', 'max:255'],
             'excerpt' => ['string', 'max:1000'],
             'content' => ['string'],
+            'tags' => ['array'],
+            'tags.*' => ['string', Rule::exists(Tag::class, 'slug')],
         ];
+    }
+
+    protected function passedValidation(): void
+    {
+        $this->merge([
+            'user_id' => $this->user()->getKey(),
+        ])
+        ->except('tags');
     }
 }
