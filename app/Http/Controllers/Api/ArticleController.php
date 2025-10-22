@@ -7,7 +7,9 @@ use App\Http\Requests\CreateArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
+use App\Models\Tag;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
@@ -47,14 +49,14 @@ class ArticleController extends Controller
 
     public function store(CreateArticleRequest $request)
     {
-        $record = Article::create([
-            'title' => $request->str('title'),
-            'excerpt' => $request->str('excerpt'),
-            'content' => $request->str('content'),
-            'user_id' => auth()->id(),
-        ]);
-
-        return $record;
+        $record = Article::create($request->validated());
+        if ($tags = $request->json('tags')) {
+            $tags = Tag::query()
+                ->whereIn('slug', $tags)
+                ->pluck('id');
+            $record->tags()->attach($tags);
+        }
+        return new ArticleResource($record);
     }
 
     /**
@@ -64,18 +66,33 @@ class ArticleController extends Controller
     {
         return new ArticleResource(
             $article
-                ->loadMissing('user.followers'),
+                ->when(auth('sanctum')->check(), function ($query) {
+                    $query->withExists(['favorites as favorited' => function ($query) {
+                        $query->where('user_id', auth('sanctum')->id());
+                    }]);
+                })
+                ->loadMissing(['user' => function (Builder $query) {
+                    $query->withCount('followers');
+                    $query->withExists(['followers as following' => function ($query) {
+                        $query->where('follower_id', auth('sanctum')->id());
+                    }]);
+                }]),
         );
     }
 
     public function update(UpdateArticleRequest $request, Article $article)
     {
-        $article->update([
-            'title' => $request->str('title'),
-            'excerpt' => $request->str('excerpt'),
-            'content' => $request->str('content'),
-        ]);
+        $record->update($request->validated());
 
-        return new ArticleResource($article);
+        if ($tags = $request->json('tags')) {
+            $tags = Tag::query()
+                ->whereIn('slug', $tags)
+                ->pluck('id');
+            $record->tags()->sync($tags);
+        }
+
+        $record->setRelation('user', auth()->user());
+
+        return new ArticleResource($record);
     }
 }

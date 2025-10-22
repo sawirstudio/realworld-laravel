@@ -16,7 +16,9 @@ class UserController extends Controller
      */
     public function store(CreateUserRequest $request)
     {
-        return new UserResource();
+        return new UserResource(
+            User::create($request->validated())
+        );
     }
 
     /**
@@ -25,8 +27,9 @@ class UserController extends Controller
     public function show(User $user)
     {
         return new UserResource(
-            $user
-                ->load('followers'),
+            $user->loadExists(['followers as following' => function ($query) {
+                    $query->where('follower_id', auth('sanctum')->id());
+                }]),
         );
     }
 
@@ -37,9 +40,8 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request)
     {
-        $user = auth()->user();
-        $user->update($request->validated());
+        auth()->user()->update($request->validated());
 
-        return new UserResource($user);
+        return new UserResource(auth()->user());
     }
 }

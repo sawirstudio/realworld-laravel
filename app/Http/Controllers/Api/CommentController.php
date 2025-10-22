@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Article;
 use App\Models\Comment;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -20,31 +21,28 @@ class CommentController extends Controller
         return CommentResource::collection(
             Comment::query()
                 ->whereBelongsTo($article)
-                ->with('user')
+                ->with('user', function ($query) {
+                    $query->withExists(['followers as following' => function (Builder $query) {
+                        $query->where('follower_id', auth('sanctum')->id());
+                    }]);
+                })
                 ->orderByDesc('created_at')
                 ->paginate($request->query('per_page'))
                 ->withQueryString(),
         );
     }
 
-    public function store(CreateCommentRequest $request, Article $article)
+    public function store(CreateCommentRequest $request)
     {
-        $comment = Comment::create([
-            'content' => $request->json('content'),
-            'user_id' => auth()->id(),
-            'article_id' => $article->getKey(),
-        ]);
-
         return new CommentResource(
-            $comment->load('user'),
+            Comment::create($request->validated())
+                ->load('user'),
         );
     }
 
     public function update(UpdateCommentRequest $request, Comment $comment)
     {
-        $comment->update([
-            'content' => $request->str('content'),
-        ]);
+        $comment->update($request->validated());
 
         return new CommentResource(
             $comment->load('user'),
