@@ -9,13 +9,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-Route::post('personal-access-tokens', [PersonalAccessTokenController::class, 'store']);
+Route::post('/personal-access-tokens', [PersonalAccessTokenController::class, 'store']);
 Route::get('/users/{user:name}', [UserController::class, 'show']);
 Route::post('/users', [UserController::class, 'store']);
 Route::get('/tags', [TagController::class, 'index']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [UserController::class, 'edit']);
-    Route::delete('personal-access-tokens', [PersonalAccessTokenController::class, 'destroy']);
+    Route::delete('/personal-access-token', [PersonalAccessTokenController::class, 'destroy']);
 
     Route::post('/articles', [ArticleController::class, 'store']);
     Route::put('articles/{article:slug}', [ArticleController::class, 'update']);
